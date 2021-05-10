@@ -1,0 +1,21 @@
+#fieles of output
+MDK-ARM/**/*.lst
+MDK-ARM/**/*.o
+MDK-ARM/**/*.d
+MDK-ARM/**/*.crf
+MDK-ARM/**/*.lnp
+MDK-ARM/**/*.axf
+MDK-ARM/**/*.htm
+MDK-ARM/**/*.build_log.htm
+MDK-ARM/**/*.dep
+MDK-ARM/**/*.iex
+MDK-ARM/**/*.i
+MDK-ARM/**/*.bin
+MDK-ARM/**/*.hex
+
+#Keil Project screen layout file
+MDK-ARM/*.uvguix.*
+MDK-ARM/*.uvgui.*
+
+#JLINK file
+JLinkLog.txt
