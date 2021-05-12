@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "crc.h"
 #include "usart.h"
 #include "gpio.h"
 #include "fsmc.h"
@@ -27,7 +28,7 @@
 /* USER CODE BEGIN Includes */
 #include "sys.h"
 #include "delay.h"
-#include "lcd.h"
+#include "ILI93xx.h"
 
 #include "key.h"
 #include "24cxx.h"
@@ -254,9 +255,10 @@ int main(void)
   MX_GPIO_Init();
   MX_FSMC_Init();
   MX_USART1_UART_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
   delay_init(72);               		//初始化延时函数
-	LCD_Init();           				//初始化LCD FSMC接口
+	TFTLCD_Init();           				//初始化LCD FSMC接口
 
 		tp_dev.init();				   		//触摸屏初始化 
   /* USER CODE END 2 */
@@ -268,7 +270,7 @@ int main(void)
 //		
     /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */ 
+    /* USER CODE BEGIN 3 */
 //	}
 
 	

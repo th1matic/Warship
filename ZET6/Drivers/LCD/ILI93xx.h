@@ -49,7 +49,7 @@ typedef struct
 //使用NOR/SRAM的 Bank1.sector4,地址位HADDR[27,26]=11 A10作为数据命令区分线 
 //注意设置时STM32内部会右移一位对其! 			    
 #define LCD_BASE        ((u32)(0x6C000000 | 0x000007FE))
-#define LCD             ((LCD_TypeDef *) LCD_BASE)
+#define TFTLCD             ((LCD_TypeDef *) LCD_BASE)
 //////////////////////////////////////////////////////////////////////////////////
 	 
 //扫描方向定义
@@ -94,7 +94,7 @@ typedef struct
 #define LGRAYBLUE        0XA651 //浅灰蓝色(中间层颜色)
 #define LBBLUE           0X2B12 //浅棕蓝色(选择条目的反色)
 	    															  
-void LCD_Init(void);													   	//初始化
+void TFTLCD_Init(void);													   	//初始化
 void LCD_DisplayOn(void);													//开显示
 void LCD_DisplayOff(void);													//关显示
 void LCD_Clear(u32 Color);	 												//清屏
