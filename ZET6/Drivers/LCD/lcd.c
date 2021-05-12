@@ -1,7 +1,7 @@
 #include "lcd.h"
 #include "stdlib.h"
 #include "font.h" 
-//#include "usart.h"	 
+#include "usart.h"	 
 #include "delay.h"	 
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途

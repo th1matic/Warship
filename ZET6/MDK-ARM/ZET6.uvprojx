@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;       ../Drivers/STM32F1xx_HAL_Driver/Inc;       ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;       ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;       ../Drivers/CMSIS/Include;       ..\Drivers\LCD;       ..\Drivers\delay;       ..\Drivers\sys</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\Drivers\LCD;..\Drivers\delay;..\Drivers\sys;..\Drivers\24CXX;..\Drivers\KEY;..\Drivers\IIC;..\Drivers\TOUCH</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -647,6 +647,66 @@
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\sys\sys.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>KEY</GroupName>
+          <Files>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\KEY\key.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>24C02</GroupName>
+          <Files>
+            <File>
+              <FileName>24cxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\24CXX\24cxx.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>IIC</GroupName>
+          <Files>
+            <File>
+              <FileName>myiic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\IIC\myiic.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>TOUCH</GroupName>
+          <Files>
+            <File>
+              <FileName>ctiic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\TOUCH\ctiic.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft5206.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\TOUCH\ft5206.c</FilePath>
+            </File>
+            <File>
+              <FileName>gt9147.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\TOUCH\gt9147.c</FilePath>
+            </File>
+            <File>
+              <FileName>ott2001a.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\TOUCH\ott2001a.c</FilePath>
+            </File>
+            <File>
+              <FileName>touch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\TOUCH\touch.c</FilePath>
             </File>
           </Files>
         </Group>
