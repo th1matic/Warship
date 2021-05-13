@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "crc.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 #include "fsmc.h"
@@ -33,6 +34,8 @@
 #include "key.h"
 #include "24cxx.h"
 #include "touch.h"
+
+#include "GUI.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,8 +55,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
-
+extern __IO int32_t OS_TimeMS;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -223,6 +225,46 @@ void ctp_test(void)
 		delay_ms(5);i++;
 	}	
 }
+
+//触摸屏定位设置
+void Mytouch_MainTask(void)
+{
+    GUI_PID_STATE TouchState;
+    int xPhys;
+    int yPhys;
+    GUI_Init();
+    GUI_SetFont(&GUI_Font20_ASCII);
+	
+   	GUI_CURSOR_Show();/////在这出问题
+    GUI_CURSOR_Select(&GUI_CursorCrossL);/////
+	
+    GUI_SetBkColor(GUI_WHITE);
+    GUI_SetColor(GUI_BLACK);
+    GUI_Clear();
+    GUI_DispString("Measurement of\nA/D converter values");
+    while (1)
+    {
+        GUI_TOUCH_GetState(&TouchState); // Get the touch position in pixel
+        xPhys = GUI_TOUCH_GetxPhys(); // Get the A/D mesurement result in x
+        yPhys = GUI_TOUCH_GetyPhys(); // Get the A/D mesurement result in y
+        GUI_SetColor(GUI_BLUE);
+        GUI_DispStringAt("Analog input:\n", 0, 40);
+        GUI_GotoY(GUI_GetDispPosY() + 2);
+        GUI_DispString("x:");
+        GUI_DispDec(xPhys, 4);
+        GUI_DispString(", y:");
+        GUI_DispDec(yPhys, 4);
+        GUI_SetColor(GUI_RED);
+        GUI_GotoY(GUI_GetDispPosY() + 4);
+        GUI_DispString("\nPosition:\n");
+        GUI_GotoY(GUI_GetDispPosY() + 2);
+        GUI_DispString("x:");
+        GUI_DispDec(TouchState.x,4);
+        GUI_DispString(", y:");
+        GUI_DispDec(TouchState.y,4);
+        delay_ms(50);
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -256,11 +298,20 @@ int main(void)
   MX_FSMC_Init();
   MX_USART1_UART_Init();
   MX_CRC_Init();
+  MX_TIM3_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   delay_init(72);               		//初始化延时函数
 	TFTLCD_Init();           				//初始化LCD FSMC接口
 
-		tp_dev.init();				   		//触摸屏初始化 
+	tp_dev.init();				   		//触摸屏初始化 
+		
+	GUI_Init();
+	
+	HAL_TIM_Base_Start_IT(&htim3);
+	 
+  HAL_TIM_Base_Start_IT(&htim6);
+		
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -271,24 +322,35 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	
+//	GUI_SetBkColor(GUI_BLUE);   //设置背景颜色
+//  GUI_SetColor(GUI_YELLOW);   //设置颜色
+//  GUI_Clear();                //清屏
+//  GUI_SetFont(&GUI_Font24_ASCII); //设置字体
+//  GUI_DispStringAt("HELLO WORD!", 0, 0);
+
+  Mytouch_MainTask();
+
 //	}
 
-	
-  	POINT_COLOR=RED;
-	LCD_ShowString(30,50,200,16,16,"WarShip STM32");	
-	LCD_ShowString(30,70,200,16,16,"TOUCH TEST");	
-	LCD_ShowString(30,90,200,16,16,"ATOM@ALIENTEK");
-	LCD_ShowString(30,110,200,16,16,"2019/9/19");	 		
-   	if(tp_dev.touchtype!=0XFF)
-	{
-		LCD_ShowString(30,130,200,16,16,"Press KEY0 to Adjust");//电阻屏才显示
-	}
-	delay_ms(1500);
- 	Load_Drow_Dialog();	 	
-	
-	if(tp_dev.touchtype&0X80)ctp_test();//电容屏测试
-	else rtp_test(); 					//电阻屏测试  
-	
+//	 /*触摸屏测试函数*/
+//  	POINT_COLOR=RED;
+//	LCD_ShowString(30,50,200,16,16,"WarShip STM32");	
+//	LCD_ShowString(30,70,200,16,16,"TOUCH TEST");	
+//	LCD_ShowString(30,90,200,16,16,"ATOM@ALIENTEK");
+//	LCD_ShowString(30,110,200,16,16,"2019/9/19");	 		
+//   	if(tp_dev.touchtype!=0XFF)
+//	{
+//		LCD_ShowString(30,130,200,16,16,"Press KEY0 to Adjust");//电阻屏才显示
+//	}
+//	delay_ms(1500);
+// 	Load_Drow_Dialog();	 	
+//	
+//	if(tp_dev.touchtype&0X80)ctp_test();//电容屏测试
+//	else rtp_test(); 					//电阻屏测试  
+//	
+
+
   /* USER CODE END 3 */
 }
 
@@ -331,7 +393,18 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    static unsigned char ledState = 0;
+    if (htim == (&htim3))
+    {
+     OS_TimeMS++;
+    }
+		else if (htim == (&htim6))
+		{
+			GUI_TOUCH_Exec();
+		}
+}
 /* USER CODE END 4 */
 
 /**
