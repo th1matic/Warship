@@ -32,6 +32,7 @@
 #define KEY2_PRES	3
 #define WKUP_PRES   4
 
+void LED_Init(void);
 void KEY_Init(void);
 u8 KEY_Scan(u8 mode);
 #endif

@@ -28,7 +28,7 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+extern __IO int32_t OS_TimeMS;
 /* USER CODE END Includes */
 
 extern TIM_HandleTypeDef htim3;

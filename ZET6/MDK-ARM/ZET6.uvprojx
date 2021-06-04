@@ -134,11 +134,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4107</DriverSelection>
+            <DriverSelection>4103</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;  ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;  ../Drivers/CMSIS/Include;  ..\Drivers\LCD;  ..\Drivers\delay;  ..\Drivers\sys;  ..\Drivers\24CXX;  ..\Drivers\KEY;  ..\Drivers\IIC;  ..\Drivers\TOUCH;  ..\STemWin\inc;  ..\STemWin\Config</IncludePath>
+              <IncludePath>../Core/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;   ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;   ../Drivers/CMSIS/Include;   ..\Drivers\LCD;   ..\Drivers\delay;   ..\Drivers\sys;   ..\Drivers\24CXX;   ..\Drivers\KEY;   ..\Drivers\IIC;   ..\Drivers\TOUCH;   ..\STemWin\inc;   ..\STemWin\Config;   ..\Drivers\MALLOC;   ..\STemWin\Task</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -930,6 +930,31 @@
               <FileName>STemWin_CM3_wc16_ARGB.a</FileName>
               <FileType>4</FileType>
               <FilePath>..\STemWin\Lib\STemWin_CM3_wc16_ARGB.a</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>MALLOC</GroupName>
+          <Files>
+            <File>
+              <FileName>malloc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\MALLOC\malloc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Stemwin/Task</GroupName>
+          <Files>
+            <File>
+              <FileName>WindowDLG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\STemWin\Task\WindowDLG.c</FilePath>
+            </File>
+            <File>
+              <FileName>WindowDLG.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\STemWin\Task\WindowDLG.h</FilePath>
             </File>
           </Files>
         </Group>

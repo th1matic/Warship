@@ -36,6 +36,11 @@
 #include "touch.h"
 
 #include "GUI.h"
+
+#include "WindowDLG.h"
+
+
+#include "malloc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,7 +60,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-extern __IO int32_t OS_TimeMS;
+//extern __IO int32_t OS_TimeMS;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -306,12 +311,19 @@ int main(void)
 
 	tp_dev.init();				   		//´¥ÃþÆÁ³õÊ¼»¯ 
 		
-	GUI_Init();
+		my_mem_init(SRAMIN); 		//³õÊ¼»¯ÄÚ²¿ÄÚ´æ³Ø
+	my_mem_init(SRAMEX);  		//³õÊ¼»¯Íâ²¿ÄÚ´æ³Ø
+//	
+		GUI_Init();
+		
+		
+ KEY_Init();
+ LED_Init();
 	
 	HAL_TIM_Base_Start_IT(&htim3);
 	 
   HAL_TIM_Base_Start_IT(&htim6);
-		
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -329,8 +341,37 @@ int main(void)
 //  GUI_SetFont(&GUI_Font24_ASCII); //ÉèÖÃ×ÖÌå
 //  GUI_DispStringAt("HELLO WORD!", 0, 0);
 
-  Mytouch_MainTask();
+// GUI_TOUCH_Exec();
+//  Mytouch_MainTask();
 
+
+
+
+
+
+CreateWindow();
+
+
+//		GUI_TOUCH_Exec();
+//		GUI_Delay(50); 
+//GUI_Exec();
+
+while (1)
+{
+  GUI_Exec();
+	if (beat_flag == 1)
+	{
+		
+
+//			 FUN_ICON0Clicked();
+
+
+
+//		  printf("666\n");
+	}
+}
+
+	
 //	}
 
 //	 /*´¥ÃþÆÁ²âÊÔº¯Êý*/
@@ -348,7 +389,10 @@ int main(void)
 //	
 //	if(tp_dev.touchtype&0X80)ctp_test();//µçÈÝÆÁ²âÊÔ
 //	else rtp_test(); 					//µç×èÆÁ²âÊÔ  
-//	
+//
+
+
+
 
 
   /* USER CODE END 3 */
@@ -393,18 +437,38 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    static unsigned char ledState = 0;
-    if (htim == (&htim3))
-    {
-     OS_TimeMS++;
-    }
-		else if (htim == (&htim6))
-		{
-			GUI_TOUCH_Exec();
-		}
-}
+
+//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+//{
+
+//    if (htim == (&htim3))
+//    {
+//     OS_TimeMS++;
+//			if (OS_TimeMS >= 10)
+//			{
+//				GUI_TOUCH_Exec();
+//					GUI_Exec();
+////			HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);
+//				OS_TimeMS = 0;
+//			}
+//    }
+//		else if (htim == (&htim6))
+//		{
+////			GUI_TOUCH_Exec();
+////					GUI_Exec();
+////	
+//    
+////			if (OS_TimeMS > 500)
+////			{
+////					HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
+
+//////				OS_TimeMS = 0;
+////			}
+
+
+//		}
+//}
+
 /* USER CODE END 4 */
 
 /**

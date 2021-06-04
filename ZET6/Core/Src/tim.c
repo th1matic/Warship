@@ -21,7 +21,7 @@
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
-
+extern __IO int32_t OS_TimeMS;
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim3;
@@ -128,7 +128,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     __HAL_RCC_TIM6_CLK_ENABLE();
 
     /* TIM6 interrupt Init */
-    HAL_NVIC_SetPriority(TIM6_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(TIM6_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(TIM6_IRQn);
   /* USER CODE BEGIN TIM6_MspInit 1 */
 
@@ -170,7 +170,38 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 }
 
 /* USER CODE BEGIN 1 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
 
+    if (htim == (&htim3))
+    {
+     OS_TimeMS++;
+//		
+//			if (OS_TimeMS > 1000)
+//			{
+////				GUI_TOUCH_Exec();
+//			
+////					GUI_Exec();
+//////			HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);
+//				OS_TimeMS = 0;
+//			}
+    }
+		else if (htim == (&htim6))
+		{
+		GUI_TOUCH_Exec();
+//					GUI_Exec();
+
+    
+//			if (OS_TimeMS > 500)
+//			{
+//					HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
+
+////				OS_TimeMS = 0;
+//			}
+
+
+		}
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

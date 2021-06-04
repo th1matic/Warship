@@ -42,6 +42,49 @@
 //0，没有任何按键按下
 //1，WKUP按下 WK_UP
 //注意此函数有响应优先级,KEY0>KEY1>KEY2>WK_UP!!
+
+void LED_Init(void)
+{
+    GPIO_InitTypeDef GPIO_Initure;
+
+    __HAL_RCC_GPIOB_CLK_ENABLE();           	//开启GPIOB时钟
+	__HAL_RCC_GPIOE_CLK_ENABLE();           	//开启GPIOE时钟
+	
+    GPIO_Initure.Pin=GPIO_PIN_5; 				//PB5
+    GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;  	//推挽输出
+    GPIO_Initure.Pull=GPIO_PULLUP;          	//上拉
+    GPIO_Initure.Speed=GPIO_SPEED_FREQ_HIGH;    //高速
+    HAL_GPIO_Init(GPIOB,&GPIO_Initure);
+
+	GPIO_Initure.Pin=GPIO_PIN_5; 				//PE5
+	HAL_GPIO_Init(GPIOE,&GPIO_Initure);
+	
+    HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,GPIO_PIN_SET);	//PB5置1，默认初始化后灯灭
+    HAL_GPIO_WritePin(GPIOE,GPIO_PIN_5,GPIO_PIN_SET);	//PE5置1，默认初始化后灯灭
+}
+
+void KEY_Init(void)
+{
+    GPIO_InitTypeDef GPIO_Initure;
+    
+    __HAL_RCC_GPIOA_CLK_ENABLE();           //开启GPIOA时钟
+    __HAL_RCC_GPIOE_CLK_ENABLE();           //开启GPIOE时钟
+
+    
+    GPIO_Initure.Pin=GPIO_PIN_0;            //PA0
+    GPIO_Initure.Mode=GPIO_MODE_INPUT;      //输入
+    GPIO_Initure.Pull=GPIO_PULLDOWN;        //下拉
+    GPIO_Initure.Speed=GPIO_SPEED_FREQ_HIGH;//高速
+    HAL_GPIO_Init(GPIOA,&GPIO_Initure);
+    
+	GPIO_Initure.Pin=GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4; //PE2,3,4
+    GPIO_Initure.Mode=GPIO_MODE_INPUT;      //输入
+    GPIO_Initure.Pull=GPIO_PULLUP;          //上拉
+    GPIO_Initure.Speed=GPIO_SPEED_FREQ_HIGH;//高速
+    HAL_GPIO_Init(GPIOE,&GPIO_Initure);
+    
+}
+
 u8 KEY_Scan(u8 mode)
 {
     static u8 key_up=1;     //按键松开标志
