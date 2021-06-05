@@ -23,7 +23,7 @@
 
 #include "DIALOG.h"
 #include "tim.h"
-
+#include "PulseSensor.h"
 /*********************************************************************
 *
 *       Defines
@@ -4744,10 +4744,14 @@ static const U8 _acImage_5[8208] = {
 
 extern int beat_flag = 0;
 
+char ShowBeat[20];
+
+
+
 static void _cbICON0(WM_MESSAGE *pMsg)
 {
 	WM_HWIN hWin = pMsg->hWin;
-			printf("001\n");
+//			printf("CallBack\n");
 	switch(pMsg->MsgId)
 	{
 //    case WM_PAINT:
@@ -4757,8 +4761,14 @@ static void _cbICON0(WM_MESSAGE *pMsg)
 //      break;
 		
 		case WM_TIMER:
-			printf("123\n");
-			TEXT_SetDec(WM_GetDialogItem(hWin, ID_TEXT_1), __HAL_TIM_GET_COUNTER(&htim3), 5, 0, 0, 0); //OS_TimeMS
+//			printf("TimerTest\n");
+		
+				HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);		 
+//			TEXT_SetDec(WM_GetDialogItem(hWin, ID_TEXT_1), __HAL_TIM_GET_COUNTER(&htim3), 5, 0, 0, 0); //OS_TimeMS
+		
+		  sprintf(ShowBeat,"%d BPM",BPM);
+  TEXT_SetText(WM_GetDialogItem(hWin,ID_TEXT_1),ShowBeat);
+		
 		WM_RestartTimer(pMsg->Data.v,1000);
 		break;
 		
@@ -4824,8 +4834,10 @@ TEXT_SetTextColor(hText, GUI_BLACK);
 	
 
      
-					HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);		 
-    TEXT_SetDec(WM_GetDialogItem(hWin, ID_TEXT_1), __HAL_TIM_GET_COUNTER(&htim3), 5, 0, 0, 0); //OS_TimeMS
+			
+//    TEXT_SetDec(WM_GetDialogItem(hWin, ID_TEXT_1), __HAL_TIM_GET_COUNTER(&htim3), 5, 0, 0, 0); //OS_TimeMS
+  sprintf(ShowBeat,"%d BPM",BPM);
+  TEXT_SetText(WM_GetDialogItem(hWin,ID_TEXT_1),ShowBeat);
   
 //		}
 

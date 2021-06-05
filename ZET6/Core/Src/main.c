@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "crc.h"
 #include "tim.h"
 #include "usart.h"
@@ -41,6 +42,10 @@
 
 
 #include "malloc.h"
+
+#include "PulseSensor.h"
+
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -61,11 +66,14 @@
 
 /* USER CODE BEGIN PV */
 //extern __IO int32_t OS_TimeMS;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+
+void sendDataToProcessing(char symbol, int dat );
 
 /* USER CODE END PFP */
 
@@ -305,6 +313,8 @@ int main(void)
   MX_CRC_Init();
   MX_TIM3_Init();
   MX_TIM6_Init();
+  MX_ADC1_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   delay_init(72);               		//初始化延时函数
 	TFTLCD_Init();           				//初始化LCD FSMC接口
@@ -319,6 +329,8 @@ int main(void)
 		
  KEY_Init();
  LED_Init();
+	
+	HAL_TIM_Base_Start_IT(&htim2);
 	
 	HAL_TIM_Base_Start_IT(&htim3);
 	 
@@ -363,6 +375,10 @@ while (1)
 	{
 		
 
+
+		
+		SendDataSBQ();
+
 //			 FUN_ICON0Clicked();
 
 
@@ -406,6 +422,7 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -434,40 +451,68 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /* USER CODE BEGIN 4 */
 
-//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-//{
 
-//    if (htim == (&htim3))
-//    {
-//     OS_TimeMS++;
-//			if (OS_TimeMS >= 10)
+
+
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	
+
+	
+	
+	if (htim == (&htim2))
+//	if(htim->Instance==htim2.Instance)
+	{
+	PulseSensor_CallBack();	
+	}
+	
+	
+	
+    else if (htim == (&htim3))
+    {
+     OS_TimeMS++;
+//		
+//			if (OS_TimeMS > 1000)
 //			{
-//				GUI_TOUCH_Exec();
-//					GUI_Exec();
-////			HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);
+////				GUI_TOUCH_Exec();
+//			
+////					GUI_Exec();
+//////			HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);
 //				OS_TimeMS = 0;
 //			}
-//    }
-//		else if (htim == (&htim6))
-//		{
-////			GUI_TOUCH_Exec();
-////					GUI_Exec();
-////	
-//    
-////			if (OS_TimeMS > 500)
-////			{
-////					HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
+    }
+		else if (htim == (&htim6))
+		{
+		GUI_TOUCH_Exec();
+//					GUI_Exec();
 
-//////				OS_TimeMS = 0;
-////			}
+    
+//			if (OS_TimeMS > 500)
+//			{
+//					HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
+
+////				OS_TimeMS = 0;
+//			}
 
 
-//		}
-//}
+		}
+}
+
+
+
+
+
 
 /* USER CODE END 4 */
 
