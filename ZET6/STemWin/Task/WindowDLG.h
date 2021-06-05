@@ -11,6 +11,7 @@ WM_HWIN CreateWindow(void);
 #endif
 
 extern int beat_flag;
+extern int height_flag;
 void FUN_ICON0Clicked(void);
 //void MainTask(void)
 //{

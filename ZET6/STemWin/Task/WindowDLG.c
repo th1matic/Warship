@@ -24,6 +24,8 @@
 #include "DIALOG.h"
 #include "tim.h"
 #include "PulseSensor.h"
+#include "UltrasonicWave.h"
+#include "stdio.h"
 /*********************************************************************
 *
 *       Defines
@@ -50,6 +52,9 @@
 #define ID_TEXT_0 (GUI_ID_USER + 0x1A)
 #define ID_TEXT_1 (GUI_ID_USER + 0x1B)
 
+#define ID_FRAMEWIN_1 (GUI_ID_USER + 0x1C)
+#define ID_TEXT_2 (GUI_ID_USER + 0x1D)
+#define ID_TEXT_3 (GUI_ID_USER + 0x1E)
 
 // USER END
 
@@ -4743,9 +4748,10 @@ static const U8 _acImage_5[8208] = {
 // USER START (Optionally insert additional static data)
 
 extern int beat_flag = 0;
+extern int height_flag = 0;
 
 char ShowBeat[20];
-
+char ShowHeight[20];
 
 
 static void _cbICON0(WM_MESSAGE *pMsg)
@@ -4779,10 +4785,40 @@ static void _cbICON0(WM_MESSAGE *pMsg)
 	}
 }
 
+static void _cbICON1(WM_MESSAGE *pMsg)
+{
+	WM_HWIN hWin = pMsg->hWin;
+//			printf("CallBack\n");
+	switch(pMsg->MsgId)
+	{
+//    case WM_PAINT:
+//      /* 设置客户窗口的背景颜色 */
+//      GUI_SetBkColor(GUI_LIGHTGRAY);
+//      GUI_Clear();
+//      break;
+		
+		case WM_TIMER:
+//			printf("TimerTest\n");
+		
+				HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);		 
+//			TEXT_SetDec(WM_GetDialogItem(hWin, ID_TEXT_1), __HAL_TIM_GET_COUNTER(&htim3), 5, 0, 0, 0); //OS_TimeMS
+		
+  sprintf(ShowHeight,"%.1f cm",UltrasonicWave_Distance);
+  TEXT_SetText(WM_GetDialogItem(hWin,ID_TEXT_3),ShowHeight);
+		
+		WM_RestartTimer(pMsg->Data.v,1000);
+		break;
+		
+		
+		default:
+			WM_DefaultProc(pMsg);
+		  break;
+	}
+}
+
 //static void FUN_ICON0Clicked(void)
  void FUN_ICON0Clicked(void)
 {
-	
 	WM_HWIN hWin;
   WM_HWIN hChild;
   WM_HWIN hText;
@@ -4823,7 +4859,6 @@ static void _cbICON0(WM_MESSAGE *pMsg)
 TEXT_SetTextColor(hText, GUI_BLACK);
 
 
-
 //   
 	 
   /* 在客户窗口中创建子控件 */
@@ -4841,12 +4876,71 @@ TEXT_SetTextColor(hText, GUI_BLACK);
   
 //		}
 
+										 WM_RestartTimer(hTimer,1000);
 
+// }
+
+}
+
+
+ void FUN_ICON1Clicked(void)
+{
+	WM_HWIN hWin;
+  WM_HWIN hChild;
+  WM_HWIN hText;
+	WM_HTIMER hTimer;
+
+
+//hTimer =WM_CreateTimer(WM_GetClientWindow(hWin),0,3000,0);	
+//		if (OS_TimeMS == 499)
+//		{
+	 
+  /* 创建框架窗口 */
+	hWin = FRAMEWIN_CreateEx(20,        /* 相对于父窗口坐标的最左像素 */
+                         20,           /* 相对于父窗口坐标的最上像素 */
+                         200,          /* 水平尺寸 */
+                         260,          /* 垂直尺寸 */
+                         WM_HBKWIN,    /* 父窗口句柄 */
+                         WM_CF_SHOW,   /* 窗口创建标志 */
+                         0,            /* 额外创建标志,0不可移动，1可移动 */
+                         ID_FRAMEWIN_1,/* 控件ID */
+                         "",           /* 标题栏文本 */
+		                    	_cbICON1);   /* 客户窗口回调函数 */
+  FRAMEWIN_SetFont(hWin, GUI_FONT_20B_1);
+  FRAMEWIN_SetText(hWin, "Height");
+  FRAMEWIN_AddCloseButton(hWin, FRAMEWIN_BUTTON_RIGHT, 0);
+  /* 设置为模态窗口 */
+  WM_MakeModal(hWin);
+  /* 获取客户窗口句柄 */
+  hChild = WM_GetClientWindow(hWin);
+//	
+  	hTimer = WM_CreateTimer(WM_GetClientWindow(hWin), 0, 1000, 0);
+		
+		
+/* 在客户窗口中创建子控件 */
+  hText = TEXT_CreateEx(0, 30, 140, 34, hChild, WM_CF_SHOW, 0, ID_TEXT_2, "Your Height:");
+  TEXT_SetFont(hText, GUI_FONT_20_1);
+//  TEXT_SetTextColor(hText, GUI_GRAY);
+TEXT_SetTextColor(hText, GUI_BLACK);
+
+
+//   
+	 
+  /* 在客户窗口中创建子控件 */
+  hText = TEXT_CreateEx(20, 90, 140, 34, hWin, WM_CF_SHOW, 0, ID_TEXT_3, "");
+  TEXT_SetFont(hText, GUI_FONT_32_1);
+//  TEXT_SetTextColor(hText, GUI_GRAY);
+TEXT_SetTextColor(hText, GUI_BLACK);
+	
+
+     
+			
+//    TEXT_SetDec(WM_GetDialogItem(hWin, ID_TEXT_1), __HAL_TIM_GET_COUNTER(&htim3), 5, 0, 0, 0); //OS_TimeMS
+  sprintf(ShowHeight,"%.1f cm",UltrasonicWave_Distance);
+  TEXT_SetText(WM_GetDialogItem(hWin,ID_TEXT_3),ShowHeight);
+//		}
 
 										 WM_RestartTimer(hTimer,1000);
- 
-
-
 
 // }
 
@@ -4975,6 +5069,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 //					if (WM_NOTIFICATION_CHILD_DELETED)
 //			{
 				beat_flag = 1;
+			  height_flag = 0;
 //					HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);
 //			}
 		
@@ -5020,11 +5115,13 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
+			height_flag = 1;
 			beat_flag = 0;
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
+			FUN_ICON1Clicked();
         // USER END
         break;
       case WM_NOTIFICATION_MOVED_OUT:

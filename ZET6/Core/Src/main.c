@@ -44,7 +44,7 @@
 #include "malloc.h"
 
 #include "PulseSensor.h"
-
+#include "UltrasonicWave.h"
 #include "stdio.h"
 /* USER CODE END Includes */
 
@@ -315,6 +315,7 @@ int main(void)
   MX_TIM6_Init();
   MX_ADC1_Init();
   MX_TIM2_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
   delay_init(72);               		//初始化延时函数
 	TFTLCD_Init();           				//初始化LCD FSMC接口
@@ -374,17 +375,20 @@ while (1)
 	if (beat_flag == 1)
 	{
 		
-
-
-		
 		SendDataSBQ();
 
 //			 FUN_ICON0Clicked();
 
-
-
 //		  printf("666\n");
 	}
+	
+	else if (height_flag == 1)
+	{
+							UltrasonicWave_StartMeasure();
+
+	  UltrasonicWave_printf();
+	}
+	
 }
 
 	
@@ -495,6 +499,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		else if (htim == (&htim6))
 		{
 		GUI_TOUCH_Exec();
+
 //					GUI_Exec();
 
     
