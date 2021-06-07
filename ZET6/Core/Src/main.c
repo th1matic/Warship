@@ -65,7 +65,19 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-//extern __IO int32_t OS_TimeMS;
+
+#include <string.h>
+ 
+#define RXBUFFERSIZE 256     //最大接收字节数
+char RxBuffer[RXBUFFERSIZE];  //接收数据
+uint8_t aRxBuffer;			//接收中断缓冲
+uint8_t Uart3_Rx_Cnt = 0;		//接收缓冲计数
+
+
+
+//uint8_t OT_RxBuffer[2];
+
+
 
 /* USER CODE END PV */
 
@@ -316,6 +328,7 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
   MX_TIM5_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   delay_init(72);               		//初始化延时函数
 	TFTLCD_Init();           				//初始化LCD FSMC接口
@@ -336,6 +349,13 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim3);
 	 
   HAL_TIM_Base_Start_IT(&htim6);
+	
+	
+//  HAL_UART_Receive_IT(&huart1,OT_RxBuffer,1);
+	
+	
+//	HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer, 1);
+	HAL_UART_Receive_IT(&huart3, (uint8_t *)&aRxBuffer, 1);
 
   /* USER CODE END 2 */
 
@@ -512,12 +532,98 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 		}
+		
+
+		
 }
 
 
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//{
+//	if (huart == (&huart1))
+//	{
+//	
+//   if (OT_RxBuffer == "1")
+//	 {
+//		 HAL_UART_Transmit(&huart1, OT_RxBuffer, 1, 1000);
+////	 printf("获得数据");
+//	 }
+// }
+//	
+//  HAL_UART_Receive_IT(&huart1,OT_RxBuffer,1);
+//}
 
 
 
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(huart);
+  /* NOTE: This function Should not be modified, when the callback is needed,
+           the HAL_UART_TxCpltCallback could be implemented in the user file
+   */
+ 
+	if (huart == (&huart3))	
+{
+	
+	if(Uart3_Rx_Cnt >= 255)  //溢出判断
+	{
+		Uart3_Rx_Cnt = 0;
+		memset(RxBuffer,0x00,sizeof(RxBuffer));
+		HAL_UART_Transmit(&huart1, (uint8_t *)"数据溢出", 10,0xFFFF); 	
+        
+	}
+	else
+	{
+		RxBuffer[Uart3_Rx_Cnt++] = aRxBuffer;   //接收数据转存
+	
+		if((RxBuffer[Uart3_Rx_Cnt-1] == 0x0A)&&(RxBuffer[Uart3_Rx_Cnt-2] == 0x0D)) //判断结束位
+		{
+//			HAL_UART_Transmit(&huart1, (uint8_t *)&RxBuffer, Uart1_Rx_Cnt,0xFFFF); //将收到的信息发送出去			
+		
+			if (RxBuffer[0] == 0x31)
+			{
+         printf ("心率指令\r\n");
+				RxBuffer[0] = 0x00;
+							FUN_ICON0Clicked();
+			}
+			
+			else if (RxBuffer[0] == 0x32)
+			{
+         printf ("身高指令\r\n");
+				RxBuffer[0] = 0x00;				
+							FUN_ICON1Clicked();				
+			}
+			
+			else if (RxBuffer[0] == 0x33)
+			{
+         printf ("血压指令\r\n");
+				RxBuffer[0] = 0x00;				
+			}
+
+			else if (RxBuffer[0] == 0x34)
+			{
+         printf ("体重指令\r\n");
+				RxBuffer[0] = 0x00;
+			}	
+			
+			else if (RxBuffer[0] == 0x35)
+			{
+         printf ("无线指令\r\n");
+				RxBuffer[0] = 0x00;
+			}		
+			
+			while(HAL_UART_GetState(&huart3) == HAL_UART_STATE_BUSY_TX);//检测UART发送结束
+			Uart3_Rx_Cnt = 0;
+			memset(RxBuffer,0x00,sizeof(RxBuffer)); //清空数组
+		
+		
+		}
+	}
+
+	HAL_UART_Receive_IT(&huart3, (uint8_t *)&aRxBuffer, 1);   //再开启接收中断
+	}
+}
 
 /* USER CODE END 4 */
 
