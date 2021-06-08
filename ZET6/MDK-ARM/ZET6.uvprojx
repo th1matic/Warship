@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;   ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;   ../Drivers/CMSIS/Include;   ..\Drivers\LCD;   ..\Drivers\delay;   ..\Drivers\sys;   ..\Drivers\24CXX;   ..\Drivers\KEY;   ..\Drivers\IIC;   ..\Drivers\TOUCH;   ..\STemWin\inc;   ..\STemWin\Config;   ..\Drivers\MALLOC;   ..\STemWin\Task;   ..\Drivers\PulseSensor;   ..\Drivers\UltrasonicWave</IncludePath>
+              <IncludePath>../Core/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;  ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;  ../Drivers/CMSIS/Include;  ..\Drivers\LCD;  ..\Drivers\delay;  ..\Drivers\sys;  ..\Drivers\24CXX;  ..\Drivers\KEY;  ..\Drivers\IIC;  ..\Drivers\TOUCH;  ..\STemWin\inc;  ..\STemWin\Config;  ..\Drivers\MALLOC;  ..\STemWin\Task;  ..\Drivers\PulseSensor;  ..\Drivers\UltrasonicWave;  ..\GizwitFiles\Hal;  ..\GizwitFiles\Gizwits;  ..\GizwitFiles\Utils</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1143,6 +1143,51 @@
               <FileName>UltrasonicWave.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\UltrasonicWave\UltrasonicWave.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Gitzwits</GroupName>
+          <Files>
+            <File>
+              <FileName>gizwits_product.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\GizwitFiles\Gizwits\gizwits_product.c</FilePath>
+            </File>
+            <File>
+              <FileName>gizwits_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\GizwitFiles\Gizwits\gizwits_protocol.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Gizwits Drive</GroupName>
+          <Files>
+            <File>
+              <FileName>hal_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\GizwitFiles\Hal\hal_key.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Gizwits Utils</GroupName>
+          <Files>
+            <File>
+              <FileName>common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\GizwitFiles\Utils\common.c</FilePath>
+            </File>
+            <File>
+              <FileName>dataPointTools.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\GizwitFiles\Utils\dataPointTools.c</FilePath>
+            </File>
+            <File>
+              <FileName>ringbuffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\GizwitFiles\Utils\ringbuffer.c</FilePath>
             </File>
           </Files>
         </Group>

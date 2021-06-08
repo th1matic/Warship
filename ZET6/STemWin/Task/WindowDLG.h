@@ -12,7 +12,9 @@ WM_HWIN CreateWindow(void);
 
 extern int beat_flag;
 extern int height_flag;
+extern int wifi_flag;
 void FUN_ICON0Clicked(void);
+void FUN_ICON1Clicked(void);
 //void MainTask(void)
 //{
 //	GUI_Init();

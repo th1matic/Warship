@@ -4749,7 +4749,7 @@ static const U8 _acImage_5[8208] = {
 
 extern int beat_flag = 0;
 extern int height_flag = 0;
-
+extern int wifi_flag = 0;
 char ShowBeat[20];
 char ShowHeight[20];
 
@@ -5196,6 +5196,9 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
+           wifi_flag = 1;
+		      	beat_flag = 0;
+			     height_flag = 0;
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:

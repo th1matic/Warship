@@ -46,6 +46,10 @@
 #include "PulseSensor.h"
 #include "UltrasonicWave.h"
 #include "stdio.h"
+
+#include "hal_key.h"
+#include "gizwits_product.h"
+#include "common.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,11 +78,15 @@ uint8_t aRxBuffer;			//接收中断缓冲
 uint8_t Uart3_Rx_Cnt = 0;		//接收缓冲计数
 
 
-
-//uint8_t OT_RxBuffer[2];
-
+extern uint8_t bRxBuffer;			//接收中断缓冲
 
 
+
+#define GPIO_KEY_NUM 2 ///< Defines the total number of key member
+keyTypedef_t singleKey[GPIO_KEY_NUM]; ///< Defines a single key member array pointer
+keysTypedef_t keys;  
+
+extern uint8_t bRxBuffer;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -91,6 +99,71 @@ void sendDataToProcessing(char symbol, int dat );
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+/**
+* key1 short press handle
+* @param none
+* @return none
+*/
+void key1ShortPress(void)
+{
+    GIZWITS_LOG("KEY1 PRESS ,Production Mode\n");
+    gizwitsSetMode(WIFI_PRODUCTION_TEST);
+}
+
+/**
+* key1 long press handle
+* @param none
+* @return none
+*/
+void key1LongPress(void)
+{
+    GIZWITS_LOG("KEY1 PRESS LONG ,Wifi Reset\n");
+    gizwitsSetMode(WIFI_RESET_MODE);
+
+}
+
+/**
+* key2 short press handle
+* @param none
+* @return none
+*/
+void key2ShortPress(void)
+{
+    GIZWITS_LOG("KEY2 PRESS ,Soft AP mode\n");
+    #if !MODULE_TYPE
+    gizwitsSetMode(WIFI_SOFTAP_MODE);
+    #endif
+}
+
+/**
+* key2 long press handle
+* @param none
+* @return none
+*/
+void key2LongPress(void)
+{
+    //AirLink mode
+    GIZWITS_LOG("KEY2 PRESS LONG ,AirLink mode\n");
+    #if !MODULE_TYPE
+    gizwitsSetMode(WIFI_AIRLINK_MODE);
+    #endif
+	 GIZWITS_LOG("2353252\n");
+}
+
+/**
+* Key init function
+* @param none
+* @return none
+*/
+void keyInit(void)
+{
+    singleKey[0] = keyInitOne(NULL, KEY1_GPIO_Port, KEY1_Pin, key1ShortPress, key1LongPress);
+    singleKey[1] = keyInitOne(NULL, KEY2_GPIO_Port, KEY2_Pin, key2ShortPress, key2LongPress);
+    keys.singleKey = (keyTypedef_t *)&singleKey;
+    keyParaInit(&keys); 
+}
+
 //清空屏幕并在右上角显示"RST"
 void Load_Drow_Dialog(void)
 {
@@ -187,33 +260,33 @@ void lcd_draw_bline(u16 x1, u16 y1, u16 x2, u16 y2,u8 size,u16 color)
 ////////////////////////////////////////////////////////////////////////////////
 //5个触控点的颜色(电容触摸屏用)												 
 const u16 POINT_COLOR_TBL[5]={RED,GREEN,BLUE,BROWN,GRED};  
-//电阻触摸屏测试函数
-void rtp_test(void)
-{
-	u8 key;
-	u8 i=0;	  
-	while(1)
-	{
-	 	key=KEY_Scan(0);
-		tp_dev.scan(0); 		 
-		if(tp_dev.sta&TP_PRES_DOWN)			//触摸屏被按下
-		{	
-		 	if(tp_dev.x[0]<lcddev.width&&tp_dev.y[0]<lcddev.height)
-			{	
-				if(tp_dev.x[0]>(lcddev.width-24)&&tp_dev.y[0]<16)Load_Drow_Dialog();//清除
-				else TP_Draw_Big_Point(tp_dev.x[0],tp_dev.y[0],RED);		//画图	  			   
-			}
-		}else delay_ms(10);	//没有按键按下的时候 	    
-		if(key==KEY0_PRES)	//KEY0按下,则执行校准程序
-		{
-			LCD_Clear(WHITE);	//清屏
-		    TP_Adjust();  		//屏幕校准 
-			TP_Save_Adjdata();	 
-			Load_Drow_Dialog();
-		}
-		i++;
-	}
-}
+////电阻触摸屏测试函数
+//void rtp_test(void)
+//{
+//	u8 key;
+//	u8 i=0;	  
+//	while(1)
+//	{
+//	 	key=KEY_Scan(0);
+//		tp_dev.scan(0); 		 
+//		if(tp_dev.sta&TP_PRES_DOWN)			//触摸屏被按下
+//		{	
+//		 	if(tp_dev.x[0]<lcddev.width&&tp_dev.y[0]<lcddev.height)
+//			{	
+//				if(tp_dev.x[0]>(lcddev.width-24)&&tp_dev.y[0]<16)Load_Drow_Dialog();//清除
+//				else TP_Draw_Big_Point(tp_dev.x[0],tp_dev.y[0],RED);		//画图	  			   
+//			}
+//		}else delay_ms(10);	//没有按键按下的时候 	    
+//		if(key==KEY0_PRES)	//KEY0按下,则执行校准程序
+//		{
+//			LCD_Clear(WHITE);	//清屏
+//		    TP_Adjust();  		//屏幕校准 
+//			TP_Save_Adjdata();	 
+//			Load_Drow_Dialog();
+//		}
+//		i++;
+//	}
+//}
 //电容触摸屏测试函数
 void ctp_test(void)
 {
@@ -329,6 +402,8 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM5_Init();
   MX_USART3_UART_Init();
+  MX_TIM4_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   delay_init(72);               		//初始化延时函数
 	TFTLCD_Init();           				//初始化LCD FSMC接口
@@ -341,7 +416,7 @@ int main(void)
 		GUI_Init();
 		
 		
- KEY_Init();
+// KEY_Init();
  LED_Init();
 	
 	HAL_TIM_Base_Start_IT(&htim2);
@@ -350,13 +425,24 @@ int main(void)
 	 
   HAL_TIM_Base_Start_IT(&htim6);
 	
-	
+	HAL_TIM_Base_Start_IT(&htim4);	
 //  HAL_UART_Receive_IT(&huart1,OT_RxBuffer,1);
 	
 	
 //	HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer, 1);
 	HAL_UART_Receive_IT(&huart3, (uint8_t *)&aRxBuffer, 1);
+	
+//HAL_UART_Receive_IT(&huart2, (uint8_t *)&bRxBuffer, 1);//开启下一次接收中断
+//HAL_UART_Receive_IT(&huart2, (uint8_t *)&aRxBuffer, 1);//开启下一次接收中断
+ uartInit();
 
+
+
+	userInit();
+	gizwitsInit();
+	keyInit();
+	GIZWITS_LOG("MCU Init Success \n");
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -389,8 +475,23 @@ CreateWindow();
 //		GUI_Delay(50); 
 //GUI_Exec();
 
+
+//    GIZWITS_LOG("KEY2 PRESS LONG ,AirLink mode\n");
+//    #if !MODULE_TYPE
+//    gizwitsSetMode(WIFI_AIRLINK_MODE);
+//    #endif
+//	 GIZWITS_LOG("2353252\n");
+
+//	    GIZWITS_LOG("KEY2 PRESS ,Soft AP mode\n");
+//    #if !MODULE_TYPE
+//    gizwitsSetMode(WIFI_SOFTAP_MODE);
+//    #endif
+//   GIZWITS_LOG("aasdsfafaa");
+
 while (1)
 {
+
+	
   GUI_Exec();
 	if (beat_flag == 1)
 	{
@@ -409,8 +510,17 @@ while (1)
 	  UltrasonicWave_printf();
 	}
 	
-}
 
+//	  else if (wifi_flag == 1)
+//  {
+
+	 userHandle();
+//				printf ("well");
+		gizwitsHandle((dataPoint_t *)&currentDataPoint);
+//  }
+	
+}
+  
 	
 //	}
 
@@ -533,7 +643,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		}
 		
-
+	else if(htim==&htim4)
+	{
+//				printf ("well");
+			keyHandle((keysTypedef_t *)&keys);
+			gizTimerMs();
+	}
 		
 }
 
@@ -585,13 +700,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			{
          printf ("心率指令\r\n");
 				RxBuffer[0] = 0x00;
+				beat_flag = 1;
+			  height_flag = 0;
 							FUN_ICON0Clicked();
 			}
 			
 			else if (RxBuffer[0] == 0x32)
 			{
          printf ("身高指令\r\n");
-				RxBuffer[0] = 0x00;				
+				RxBuffer[0] = 0x00;			
+			   height_flag = 1;
+			   beat_flag = 0;				
 							FUN_ICON1Clicked();				
 			}
 			
@@ -611,6 +730,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			{
          printf ("无线指令\r\n");
 				RxBuffer[0] = 0x00;
+				   wifi_flag = 1;
+		      	beat_flag = 0;
+			     height_flag = 0;
 			}		
 			
 			while(HAL_UART_GetState(&huart3) == HAL_UART_STATE_BUSY_TX);//检测UART发送结束
@@ -623,6 +745,19 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 	HAL_UART_Receive_IT(&huart3, (uint8_t *)&aRxBuffer, 1);   //再开启接收中断
 	}
+
+	
+	 if(huart == (&huart2))  
+    {  
+//				gizPutData((uint8_t *)&bRxBuffer, 1);
+
+//        HAL_UART_Receive_IT(&huart2, (uint8_t *)&bRxBuffer, 1);//开启下一次接收中断  
+//   
+      gizPutData((uint8_t *)&bRxBuffer, 1);
+			HAL_UART_Receive_IT(&huart2, (uint8_t *)&bRxBuffer, 1);//开启下一次接收中断 
+	
+		}  
+	
 }
 
 /* USER CODE END 4 */
