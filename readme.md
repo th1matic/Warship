@@ -81,12 +81,13 @@
 
 ### 语音控制/GUI界面
 
-<iframe src="//player.bilibili.com/player.html?aid=424311194&bvid=BV1F3411j71x&cid=517828564&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe
+[毕业设计——家用保健医生系统 语音控制及GUI桌面_哔哩哔哩_bilibili](https://www.bilibili.com/video/bv1F3411j71x)
+
 
 
 ### 心电采集
 
-<iframe src="//player.bilibili.com/player.html?aid=979324903&bvid=BV1644y1n7w1&cid=517926586&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+[毕业设计——家用保健医生 心率测量 PulseSensor_哔哩哔哩_bilibili](https://www.bilibili.com/video/bv1644y1n7w1)
 
 
 
